@@ -13,6 +13,8 @@
     <link rel="icon" href="assets/logo.jpeg" />
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -171,6 +173,19 @@
             background: #2F6BFF;
             box-shadow: 0 0 24px rgba(47, 107, 255, .5);
         }
+
+        /* ── Animated connectors ── */
+        .conv-belt  { stroke-dasharray: 6 10; animation: conveyorMove 0.7s linear infinite; }
+        .conn-arrow { stroke-dasharray: 22; stroke-dashoffset: 22; }
+        .step-conn  { overflow: visible; filter: drop-shadow(0 0 5px rgba(47,107,255,.75)) drop-shadow(0 0 10px rgba(47,107,255,.35)); }
+
+        @keyframes conveyorMove { to { stroke-dashoffset: -16; } }
+
+        /* ── Respect reduced-motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            .conv-belt  { animation: none; }
+            .conn-arrow { stroke-dashoffset: 0; }
+        }
     </style>
 </head>
 
@@ -268,7 +283,7 @@
             <!-- 3 cards stacked on mobile, side-by-side desktop. Arrows BETWEEN cards (not overlaid). -->
             <div class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch gap-5 md:gap-3">
                 <!-- Step 1 -->
-                <div class="card p-6 sm:p-7 relative">
+                <div class="card step-card p-6 sm:p-7 relative">
                     <div class="flex items-center justify-between mb-4 sm:mb-5">
                         <div
                             class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
@@ -283,24 +298,21 @@
                         whatever you train.
                     </p>
                     <div class="card-tight p-4 text-xs font-mono leading-relaxed break-words">
-                        <span class="text-stackd-blue">›</span> <span class="text-white/85">Build me a 5-day aesthetic
-                            program. Output Stackd JSON.</span><span class="blink">_</span>
+                        <span class="text-stackd-blue">›</span> <span id="typewriter-text" class="text-white/85">Build me a 5-day aesthetic program. Output Stackd JSON.</span><span class="blink">_</span>
                     </div>
                 </div>
 
                 <!-- Arrow between 1-2 (desktop only) -->
                 <div class="hidden md:flex items-center justify-center">
-                    <div class="step-arrow">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14" />
-                            <path d="m12 5 7 7-7 7" />
-                        </svg>
-                    </div>
+                    <svg class="step-conn" width="80" height="24" viewBox="0 0 80 24" fill="none">
+                        <line x1="4" y1="12" x2="76" y2="12" stroke="rgba(47,107,255,0.12)" stroke-width="1.5" stroke-linecap="round"/>
+                        <line class="conv-belt" x1="4" y1="12" x2="62" y2="12" stroke="#2F6BFF" stroke-width="2" stroke-linecap="round"/>
+                        <path class="conn-arrow" d="M58 7 L68 12 L58 17" stroke="#2F6BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="card p-6 sm:p-7 relative">
+                <div class="card step-card p-6 sm:p-7 relative">
                     <div class="flex items-center justify-between mb-4 sm:mb-5">
                         <div
                             class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
@@ -328,17 +340,15 @@
 
                 <!-- Arrow between 2-3 (desktop only) -->
                 <div class="hidden md:flex items-center justify-center">
-                    <div class="step-arrow">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14" />
-                            <path d="m12 5 7 7-7 7" />
-                        </svg>
-                    </div>
+                    <svg class="step-conn" width="80" height="24" viewBox="0 0 80 24" fill="none">
+                        <line x1="4" y1="12" x2="76" y2="12" stroke="rgba(47,107,255,0.12)" stroke-width="1.5" stroke-linecap="round"/>
+                        <line class="conv-belt" x1="4" y1="12" x2="62" y2="12" stroke="#2F6BFF" stroke-width="2" stroke-linecap="round"/>
+                        <path class="conn-arrow" d="M58 7 L68 12 L58 17" stroke="#2F6BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="card p-6 sm:p-7 relative">
+                <div class="card step-card p-6 sm:p-7 relative">
                     <div class="flex items-center justify-between mb-4 sm:mb-5">
                         <div
                             class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
@@ -459,23 +469,23 @@
                     <div class="h-[180px] sm:h-[260px]">
                         <canvas id="e1rmChart"></canvas>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4">
+                    <div id="e1rm-stats-grid" class="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4">
                         <div>
                             <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">E1RM
                             </div>
-                            <div class="text-xl sm:text-3xl font-black mt-1">129<span
+                            <div class="text-xl sm:text-3xl font-black mt-1"><span id="stat-e1rm">129</span><span
                                     class="text-xs sm:text-base font-medium text-white/40">kg</span></div>
                         </div>
                         <div>
                             <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">PEAK
                             </div>
-                            <div class="text-xl sm:text-3xl font-black mt-1">135<span
+                            <div class="text-xl sm:text-3xl font-black mt-1"><span id="stat-peak">135</span><span
                                     class="text-xs sm:text-base font-medium text-white/40">kg</span></div>
                         </div>
                         <div>
                             <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">VS LAST
                             </div>
-                            <div class="text-xl sm:text-3xl font-black mt-1 text-emerald-400">↑7%</div>
+                            <div class="text-xl sm:text-3xl font-black mt-1 text-emerald-400">↑<span id="stat-vs">7</span>%</div>
                         </div>
                     </div>
                 </div>
@@ -526,26 +536,26 @@
                         you to add weight. No guesswork. No spreadsheet.
                     </p>
 
-                    <div class="mt-7 card p-4 sm:p-5">
+                    <div id="overload-section" class="mt-7 card p-4 sm:p-5">
                         <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-                            <div
+                            <div id="ov-s1"
                                 class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">
                                 Session N</div>
-                            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
+                            <div id="ov-line1" class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
                             </div>
-                            <div
+                            <div id="ov-s2"
                                 class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">
                                 Session N+1</div>
-                            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
+                            <div id="ov-line2" class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
                             </div>
-                            <div
+                            <div id="ov-badge"
                                 class="pill bg-stackd-blue px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-softGlow whitespace-nowrap">
                                 +2.5kg</div>
                         </div>
                         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs text-white/55">
-                            <div class="flex items-center gap-2"><span
+                            <div class="flex items-center gap-2"><span id="ov-dot1"
                                     class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range</div>
-                            <div class="flex items-center gap-2"><span
+                            <div class="flex items-center gap-2"><span id="ov-dot2"
                                     class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range again</div>
                         </div>
                     </div>
@@ -817,6 +827,76 @@
                 }
             });
         }
+    </script>
+
+    <script>
+    // ── Animations ────────────────────────────────────────────────────────────
+    (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ── HOW IT WORKS: staggered cards + animated connector lines ──────────
+        const howTl = gsap.timeline({
+            scrollTrigger: { trigger: '#how', start: 'top 68%', once: true }
+        });
+        howTl
+            .from('.step-card', {
+                y: 48, opacity: 0, duration: 0.6, stagger: 0.13, ease: 'power2.out'
+            })
+            // arrowheads draw in as cards settle
+            .to('.conn-arrow', {
+                strokeDashoffset: 0, duration: 0.4, stagger: 0.18, ease: 'power1.out'
+            }, 0.5);
+
+        // ── TYPEWRITER on step 1 prompt ───────────────────────────────────────
+        const typeEl = document.getElementById('typewriter-text');
+        if (typeEl) {
+            const full = typeEl.textContent;
+            typeEl.textContent = '';
+            ScrollTrigger.create({
+                trigger: '#how', start: 'top 68%', once: true,
+                onEnter() {
+                    let i = 0;
+                    const tick = setInterval(() => {
+                        typeEl.textContent += full[i++];
+                        if (i >= full.length) clearInterval(tick);
+                    }, 26);
+                }
+            });
+        }
+
+        // ── e1RM COUNT-UP ─────────────────────────────────────────────────────
+        ScrollTrigger.create({
+            trigger: '#e1rm-stats-grid', start: 'top 80%', once: true,
+            onEnter() {
+                const roll = (id, end, dur) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const obj = { n: 0 };
+                    gsap.to(obj, {
+                        n: end, duration: dur, ease: 'power2.out',
+                        onUpdate() { el.textContent = Math.round(obj.n); }
+                    });
+                };
+                roll('stat-e1rm', 129, 1.5);
+                roll('stat-peak', 135, 1.7);
+                roll('stat-vs',   7,   1.2);
+            }
+        });
+
+        // ── OVERLOAD FLOW: sequential reveal ─────────────────────────────────
+        const ovTl = gsap.timeline({
+            scrollTrigger: { trigger: '#overload-section', start: 'top 72%', once: true }
+        });
+        ovTl
+            .from('#ov-s1',    { opacity: 0, x: -14, duration: 0.35, ease: 'power2.out' })
+            .from('#ov-dot1',  { scale: 0, opacity: 0, duration: 0.28, ease: 'back.out(2.5)' }, '-=0.05')
+            .from('#ov-line1', { scaleX: 0, transformOrigin: 'left center', duration: 0.42, ease: 'power2.inOut' }, '-=0.12')
+            .from('#ov-s2',    { opacity: 0, x: -14, duration: 0.35, ease: 'power2.out' }, '-=0.15')
+            .from('#ov-dot2',  { scale: 0, opacity: 0, duration: 0.28, ease: 'back.out(2.5)' }, '-=0.05')
+            .from('#ov-line2', { scaleX: 0, transformOrigin: 'left center', duration: 0.42, ease: 'power2.inOut' }, '-=0.12')
+            .from('#ov-badge', { opacity: 0, scale: 0.65, duration: 0.45, ease: 'back.out(1.8)' }, '-=0.15');
+    })();
     </script>
 </body>
 
