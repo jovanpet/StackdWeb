@@ -1,302 +1,412 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Stackd — The gym tracker built for AI-native lifters</title>
-<meta name="description" content="Design your program with ChatGPT or Claude. Paste the JSON. Train. Stackd is the iOS fitness tracker for AI-native lifters." />
-<meta property="og:title" content="Stackd — The gym tracker built for AI-native lifters" />
-<meta property="og:description" content="Design your program with ChatGPT or Claude. Paste the JSON. Train." />
-<meta name="theme-color" content="#000000" />
-<link rel="icon" href="assets/logo.jpeg" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Stackd — The gym tracker built for AI-native lifters</title>
+    <meta name="description"
+        content="Design your program with AI Agent. Paste the JSON. Train. Stackd is the iOS fitness tracker for AI-native lifters." />
+    <meta property="og:title" content="Stackd — The gym tracker built for AI-native lifters" />
+    <meta property="og:description" content="Design your program with any AI agent. Paste the JSON. Train." />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="assets/logo.jpeg" />
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
 
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          stackd: {
-            blue: '#2F6BFF',
-            blueDeep: '#1E5EFF',
-            ink: '#0A0A0B',
-            card: '#101013',
-            line: 'rgba(255,255,255,0.08)',
-            mute: '#8A8A93',
-          }
-        },
-        fontFamily: {
-          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-        },
-        boxShadow: {
-          glow: '0 0 60px rgba(47,107,255,0.45), 0 0 120px rgba(47,107,255,0.25)',
-          softGlow: '0 0 40px rgba(47,107,255,0.25)',
-        },
-      }
-    }
-  }
-</script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        stackd: {
+                            blue: '#2F6BFF',
+                            blueDeep: '#1E5EFF',
+                            ink: '#0A0A0B',
+                            card: '#101013',
+                            line: 'rgba(255,255,255,0.08)',
+                            mute: '#8A8A93',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                    boxShadow: {
+                        glow: '0 0 60px rgba(47,107,255,0.45), 0 0 120px rgba(47,107,255,0.25)',
+                        softGlow: '0 0 40px rgba(47,107,255,0.25)',
+                    },
+                }
+            }
+        }
+    </script>
 
-<style>
-  body { font-family: 'Inter', ui-sans-serif, system-ui; }
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
-  }
-  .glow-border { position: relative; }
-  .glow-border::before {
-    content:""; position:absolute; inset:-1px; border-radius: inherit;
-    background: linear-gradient(135deg, rgba(47,107,255,0.6), rgba(47,107,255,0) 40%, rgba(47,107,255,0.5));
-    z-index:-1; filter: blur(14px); opacity:.55;
-  }
-  .marquee { mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent); }
-  .blink { animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  .scrollbar-none::-webkit-scrollbar { display: none; }
-  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-  .phone-mock {
-    border-radius: 44px;
-    border: 8px solid #0a0a0a;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06), 0 0 60px rgba(47,107,255,0.15);
-    background: #000;
-    overflow: hidden;
-  }
-  /* Step connector arrow shown only md+ */
-  .step-arrow {
-    width: 40px; height: 40px; border-radius: 999px;
-    background: rgba(47,107,255,0.12); border: 1px solid rgba(47,107,255,0.35);
-    color: #2F6BFF; display: flex; align-items: center; justify-content: center;
-  }
-  /* Mobile-only: prevent any horizontal overflow */
-  html, body { overflow-x: hidden; }
-  pre, code { word-break: break-word; }
-  /* Hero responsive sizing */
-  @media (max-width: 480px) {
-    h1.hero { font-size: clamp(2.25rem, 11vw, 3.25rem) !important; line-height: 1.05; }
-  }
-  /* Inline-SVG fallback "phone screen" placeholders */
-  .mock-screen {
-    aspect-ratio: 9 / 19.5;
-    background:
-      radial-gradient(60% 40% at 50% 0%, rgba(47,107,255,0.25), transparent 60%),
-      linear-gradient(180deg, #07070A 0%, #000 100%);
-    display: flex; flex-direction: column; padding: 22px 18px; gap: 14px;
-  }
-  .mock-pill { height: 14px; border-radius: 999px; background: rgba(255,255,255,0.06); }
-  .mock-card-lg { border-radius: 22px; background: linear-gradient(180deg,#101015,#0a0a0d); border:1px solid rgba(255,255,255,0.07); padding:14px; }
-  .mock-cta { height: 44px; border-radius: 999px; background: #2F6BFF; box-shadow: 0 0 24px rgba(47,107,255,.5); }
-</style>
+    <style>
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui;
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(47, 107, 255, 0.6), rgba(47, 107, 255, 0) 40%, rgba(47, 107, 255, 0.5));
+            z-index: -1;
+            filter: blur(14px);
+            opacity: .55;
+        }
+
+        .marquee {
+            mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+        }
+
+        .blink {
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .phone-mock {
+            border-radius: 44px;
+            border: 8px solid #0a0a0a;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 60px rgba(47, 107, 255, 0.15);
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* Step connector arrow shown only md+ */
+        .step-arrow {
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            background: rgba(47, 107, 255, 0.12);
+            border: 1px solid rgba(47, 107, 255, 0.35);
+            color: #2F6BFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile-only: prevent any horizontal overflow */
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        pre,
+        code {
+            word-break: break-word;
+        }
+
+        /* Hero responsive sizing */
+        @media (max-width: 480px) {
+            h1.hero {
+                font-size: clamp(2.25rem, 11vw, 3.25rem) !important;
+                line-height: 1.05;
+            }
+        }
+
+        /* Inline-SVG fallback "phone screen" placeholders */
+        .mock-screen {
+            aspect-ratio: 9 / 19.5;
+            background:
+                radial-gradient(60% 40% at 50% 0%, rgba(47, 107, 255, 0.25), transparent 60%),
+                linear-gradient(180deg, #07070A 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 22px 18px;
+            gap: 14px;
+        }
+
+        .mock-pill {
+            height: 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .mock-card-lg {
+            border-radius: 22px;
+            background: linear-gradient(180deg, #101015, #0a0a0d);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 14px;
+        }
+
+        .mock-cta {
+            height: 44px;
+            border-radius: 999px;
+            background: #2F6BFF;
+            box-shadow: 0 0 24px rgba(47, 107, 255, .5);
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<header class="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2.5">
-      <img src="assets/logo.jpeg" alt="Stackd" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg" />
-      <span class="font-bold tracking-tight">Stackd</span>
-    </a>
-    <nav class="hidden md:flex items-center gap-8 text-sm text-white/70">
-      <a href="#how" class="hover:text-white">How it works</a>
-      <a href="#features" class="hover:text-white">Features</a>
-      <a href="#pricing" class="hover:text-white">Pricing</a>
-      <a href="faq.html" class="hover:text-white">FAQ</a>
-      <a href="support.html" class="hover:text-white">Support</a>
-    </nav>
-    <a href="#download" class="pill bg-stackd-blue hover:brightness-110 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 transition">
-      Get the app
-    </a>
-  </div>
-</header>
-
-<!-- HERO -->
-<section class="relative overflow-hidden">
-  <div class="absolute inset-0 grid-bg pointer-events-none"></div>
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 md:pt-32 md:pb-36 relative">
-    <div class="flex flex-col items-center text-center">
-      <div class="pill border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] sm:text-xs text-white/70 mb-6 sm:mb-8 flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-stackd-blue shadow-[0_0_10px_#2F6BFF]"></span>
-        Built for ChatGPT &amp; Claude users
-      </div>
-
-      <h1 class="hero text-4xl sm:text-5xl md:text-7xl font-black tracking-tight max-w-4xl leading-[1.05]">
-        The gym tracker built for
-        <span class="text-stackd-blue glow-text">AI-native lifters.</span>
-      </h1>
-
-      <p class="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-white/65 max-w-2xl px-2">
-        Design your program with ChatGPT or Claude. Paste the JSON. Train. That's it.
-      </p>
-
-      <div id="download" class="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
-        <a href="#" class="pill bg-white text-black font-semibold px-6 py-3.5 hover:brightness-90 transition flex items-center justify-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.43 2.25-1.18 3.04-.8.85-2.07 1.5-3.13 1.41-.13-1.13.42-2.32 1.16-3.06.83-.84 2.23-1.45 3.15-1.39zM20.5 17.39c-.55 1.27-.81 1.83-1.5 2.95-.97 1.55-2.34 3.49-4.04 3.5-1.5.02-1.89-.97-3.93-.96-2.04.01-2.46.97-3.96.96-1.7-.01-3-1.76-3.97-3.31-2.71-4.34-3-9.43-1.32-12.14 1.18-1.92 3.05-3.05 4.81-3.05 1.79 0 2.92.97 4.4.97 1.43 0 2.31-.97 4.4-.97 1.55 0 3.18.84 4.34 2.29-3.81 2.07-3.19 7.45.77 8.76z"/></svg>
-          Download on the App Store
-        </a>
-        <a href="#how" class="pill border border-white/15 hover:bg-white/5 text-white px-6 py-3.5 font-medium transition text-center">
-          See how it works →
-        </a>
-      </div>
-
-      <p class="mt-5 sm:mt-6 text-xs sm:text-sm text-white/45 px-4">
-        $1.99/month · $7.99/year · No ads · Works offline
-      </p>
-    </div>
-
-    <!-- HERO PHONE MOCK -->
-    <div class="mt-14 sm:mt-20 flex justify-center relative">
-      <div class="absolute inset-0 -top-10 flex justify-center pointer-events-none">
-        <div class="w-[320px] sm:w-[520px] h-[320px] sm:h-[520px] rounded-full bg-stackd-blue/30 blur-[80px] sm:blur-[120px]"></div>
-      </div>
-      <div class="phone-mock relative w-[260px] sm:w-[320px] md:w-[340px]">
-        <img src="assets/screen-home.jpeg" alt="Stackd home screen" class="block w-full h-auto" />
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TEXT MARQUEE -->
-<section class="border-y border-white/5 bg-black/40">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 py-5 marquee">
-    <div class="flex items-center justify-center gap-5 sm:gap-10 md:gap-16 flex-wrap text-white/40 text-xs sm:text-sm font-medium">
-      <span>Designed in ChatGPT</span>
-      <span class="w-1 h-1 rounded-full bg-white/20"></span>
-      <span>Built with Claude</span>
-      <span class="w-1 h-1 rounded-full bg-white/20"></span>
-      <span>Tracked in Stackd</span>
-      <span class="hidden sm:inline w-1 h-1 rounded-full bg-white/20"></span>
-      <span class="hidden sm:inline">iOS · SwiftData · Offline-first</span>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section id="how" class="py-20 sm:py-24 md:py-32 relative">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="text-center mb-12 sm:mb-16">
-      <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">The flow</p>
-      <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">From prompt to PR<br/>in under 60 seconds.</h2>
-      <p class="mt-4 sm:mt-5 text-white/60 max-w-2xl mx-auto px-2 text-sm sm:text-base">
-        No exercise databases. No drag-and-drop builders. The workflow you already use, with a real home for it.
-      </p>
-    </div>
-
-    <!-- 3 cards stacked on mobile, side-by-side desktop. Arrows BETWEEN cards (not overlaid). -->
-    <div class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch gap-5 md:gap-3">
-      <!-- Step 1 -->
-      <div class="card p-6 sm:p-7 relative">
-        <div class="flex items-center justify-between mb-4 sm:mb-5">
-          <div class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">STEP 01</div>
-          <div class="w-9 h-9 rounded-full bg-stackd-blue/10 border border-stackd-blue/30 flex items-center justify-center text-stackd-blue font-bold text-sm">1</div>
+    <!-- NAV -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <img src="assets/logo.jpeg" alt="Stackd" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg" />
+                <span class="font-bold tracking-tight">Stackd</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-sm text-white/70">
+                <a href="#how" class="hover:text-white">How it works</a>
+                <a href="#features" class="hover:text-white">Features</a>
+                <a href="#pricing" class="hover:text-white">Pricing</a>
+                <a href="faq.html" class="hover:text-white">FAQ</a>
+                <a href="support.html" class="hover:text-white">Support</a>
+            </nav>
+            <a href="#download"
+                class="pill bg-stackd-blue hover:brightness-110 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 transition">
+                Get the app
+            </a>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold mb-2">Ask the AI</h3>
-        <p class="text-white/55 text-sm mb-5">
-          Tell ChatGPT or Claude what you want. Push/pull/legs, hypertrophy block, 5-day aesthetic — whatever you train.
-        </p>
-        <div class="card-tight p-4 text-xs font-mono leading-relaxed break-words">
-          <span class="text-stackd-blue">›</span> <span class="text-white/85">Build me a 5-day aesthetic program. Output Stackd JSON.</span><span class="blink">_</span>
-        </div>
-      </div>
+    </header>
 
-      <!-- Arrow between 1-2 (desktop only) -->
-      <div class="hidden md:flex items-center justify-center">
-        <div class="step-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </div>
-      </div>
+    <!-- HERO -->
+    <section class="relative overflow-hidden">
+        <div class="absolute inset-0 grid-bg pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 md:pt-32 md:pb-36 relative">
+            <div class="flex flex-col items-center text-center">
+                <div
+                    class="pill border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] sm:text-xs text-white/70 mb-6 sm:mb-8 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-stackd-blue shadow-[0_0_10px_#2F6BFF]"></span>
+                    Built for AI-native users
+                </div>
 
-      <!-- Step 2 -->
-      <div class="card p-6 sm:p-7 relative">
-        <div class="flex items-center justify-between mb-4 sm:mb-5">
-          <div class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">STEP 02</div>
-          <div class="w-9 h-9 rounded-full bg-stackd-blue/10 border border-stackd-blue/30 flex items-center justify-center text-stackd-blue font-bold text-sm">2</div>
+                <h1 class="hero text-4xl sm:text-5xl md:text-7xl font-black tracking-tight max-w-4xl leading-[1.05]">
+                    The gym tracker built for
+                    <span class="text-stackd-blue glow-text">AI-native lifters.</span>
+                </h1>
+
+                <p class="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-white/65 max-w-2xl px-2">
+                    Design your program with any AI agent. Paste the JSON. Train. That's it.
+                </p>
+
+                <div id="download"
+                    class="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
+                    <a href="#"
+                        class="pill bg-white text-black font-semibold px-6 py-3.5 hover:brightness-90 transition flex items-center justify-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16.365 1.43c0 1.14-.43 2.25-1.18 3.04-.8.85-2.07 1.5-3.13 1.41-.13-1.13.42-2.32 1.16-3.06.83-.84 2.23-1.45 3.15-1.39zM20.5 17.39c-.55 1.27-.81 1.83-1.5 2.95-.97 1.55-2.34 3.49-4.04 3.5-1.5.02-1.89-.97-3.93-.96-2.04.01-2.46.97-3.96.96-1.7-.01-3-1.76-3.97-3.31-2.71-4.34-3-9.43-1.32-12.14 1.18-1.92 3.05-3.05 4.81-3.05 1.79 0 2.92.97 4.4.97 1.43 0 2.31-.97 4.4-.97 1.55 0 3.18.84 4.34 2.29-3.81 2.07-3.19 7.45.77 8.76z" />
+                        </svg>
+                        Download on the App Store
+                    </a>
+                    <a href="#how"
+                        class="pill border border-white/15 hover:bg-white/5 text-white px-6 py-3.5 font-medium transition text-center">
+                        See how it works →
+                    </a>
+                </div>
+
+                <p class="mt-5 sm:mt-6 text-xs sm:text-sm text-white/45 px-4">
+                    $1.99/month · $7.99/year · No ads · Works offline
+                </p>
+            </div>
+
+            <!-- HERO PHONE MOCK -->
+            <div class="mt-14 sm:mt-20 flex justify-center relative">
+                <div class="absolute inset-0 -top-10 flex justify-center pointer-events-none">
+                    <div
+                        class="w-[320px] sm:w-[520px] h-[320px] sm:h-[520px] rounded-full bg-stackd-blue/30 blur-[80px] sm:blur-[120px]">
+                    </div>
+                </div>
+                <div class="phone-mock relative w-[260px] sm:w-[320px] md:w-[340px]">
+                    <img src="assets/screen-home.jpeg" alt="Stackd home screen" class="block w-full h-auto" />
+                </div>
+            </div>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold mb-2">Paste the JSON</h3>
-        <p class="text-white/55 text-sm mb-5">
-          Open Stackd, hit <span class="text-white">Import New</span>, and paste. Every workout, exercise, set and rep range — instant.
-        </p>
-        <div class="card-tight p-4 text-[11px] font-mono leading-relaxed text-white/70 max-h-[120px] overflow-hidden relative">
-<pre class="whitespace-pre-wrap"><span class="text-stackd-blue">{</span>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="py-20 sm:py-24 md:py-32 relative">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="text-center mb-12 sm:mb-16">
+                <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">The flow</p>
+                <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">From prompt to PR<br />in under
+                    60 seconds.</h2>
+                <p class="mt-4 sm:mt-5 text-white/60 max-w-2xl mx-auto px-2 text-sm sm:text-base">
+                    No exercise databases. No drag-and-drop builders. The workflow you already use, with a real home for
+                    it.
+                </p>
+            </div>
+
+            <!-- 3 cards stacked on mobile, side-by-side desktop. Arrows BETWEEN cards (not overlaid). -->
+            <div class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch gap-5 md:gap-3">
+                <!-- Step 1 -->
+                <div class="card p-6 sm:p-7 relative">
+                    <div class="flex items-center justify-between mb-4 sm:mb-5">
+                        <div
+                            class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
+                            STEP 01</div>
+                        <div
+                            class="w-9 h-9 rounded-full bg-stackd-blue/10 border border-stackd-blue/30 flex items-center justify-center text-stackd-blue font-bold text-sm">
+                            1</div>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Ask the AI</h3>
+                    <p class="text-white/55 text-sm mb-5">
+                        Tell any AI agent what you want. Push/pull/legs, hypertrophy block, 5-day aesthetic —
+                        whatever you train.
+                    </p>
+                    <div class="card-tight p-4 text-xs font-mono leading-relaxed break-words">
+                        <span class="text-stackd-blue">›</span> <span class="text-white/85">Build me a 5-day aesthetic
+                            program. Output Stackd JSON.</span><span class="blink">_</span>
+                    </div>
+                </div>
+
+                <!-- Arrow between 1-2 (desktop only) -->
+                <div class="hidden md:flex items-center justify-center">
+                    <div class="step-arrow">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="card p-6 sm:p-7 relative">
+                    <div class="flex items-center justify-between mb-4 sm:mb-5">
+                        <div
+                            class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
+                            STEP 02</div>
+                        <div
+                            class="w-9 h-9 rounded-full bg-stackd-blue/10 border border-stackd-blue/30 flex items-center justify-center text-stackd-blue font-bold text-sm">
+                            2</div>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Paste the JSON</h3>
+                    <p class="text-white/55 text-sm mb-5">
+                        Open Stackd, hit <span class="text-white">Import New</span>, and paste. Every workout, exercise,
+                        set and rep range — instant.
+                    </p>
+                    <div
+                        class="card-tight p-4 text-[11px] font-mono leading-relaxed text-white/70 max-h-[120px] overflow-hidden relative">
+                        <pre class="whitespace-pre-wrap"><span class="text-stackd-blue">{</span>
   "program": "5 Day Aesthetic",
   "days": [{
     "name": "Chest &amp; Tri",
     "exercises": [...]</pre>
-          <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-stackd-card to-transparent"></div>
-        </div>
-      </div>
+                        <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-stackd-card to-transparent">
+                        </div>
+                    </div>
+                </div>
 
-      <!-- Arrow between 2-3 (desktop only) -->
-      <div class="hidden md:flex items-center justify-center">
-        <div class="step-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </div>
-      </div>
+                <!-- Arrow between 2-3 (desktop only) -->
+                <div class="hidden md:flex items-center justify-center">
+                    <div class="step-arrow">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
 
-      <!-- Step 3 -->
-      <div class="card p-6 sm:p-7 relative">
-        <div class="flex items-center justify-between mb-4 sm:mb-5">
-          <div class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">STEP 03</div>
-          <div class="w-9 h-9 rounded-full bg-stackd-blue flex items-center justify-center text-white font-bold text-sm shadow-softGlow">3</div>
+                <!-- Step 3 -->
+                <div class="card p-6 sm:p-7 relative">
+                    <div class="flex items-center justify-between mb-4 sm:mb-5">
+                        <div
+                            class="pill bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5">
+                            STEP 03</div>
+                        <div
+                            class="w-9 h-9 rounded-full bg-stackd-blue flex items-center justify-center text-white font-bold text-sm shadow-softGlow">
+                            3</div>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Train.</h3>
+                    <p class="text-white/55 text-sm mb-5">
+                        Stackd handles sets, reps, e1RM, overload alerts, and your nutrition — all in one place.
+                    </p>
+                    <div class="card-tight p-4 flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-stackd-blue/15 flex items-center justify-center text-stackd-blue flex-shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-sm font-semibold">Start Workout</div>
+                            <div class="text-xs text-white/50 truncate">Day 1 — Chest &amp; Triceps · 6 exercises</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold mb-2">Train.</h3>
-        <p class="text-white/55 text-sm mb-5">
-          Stackd handles sets, reps, e1RM, overload alerts, and your nutrition — all in one place.
-        </p>
-        <div class="card-tight p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-stackd-blue/15 flex items-center justify-center text-stackd-blue flex-shrink-0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </div>
-          <div class="min-w-0">
-            <div class="text-sm font-semibold">Start Workout</div>
-            <div class="text-xs text-white/50 truncate">Day 1 — Chest &amp; Triceps · 6 exercises</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- FEATURE 1: AI IMPORT -->
-<section id="features" class="py-20 sm:py-24 md:py-28 relative">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
-      <div>
-        <div class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">01 · AI PROGRAM IMPORT</div>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-          Your AI builds it.<br/><span class="text-stackd-blue glow-text">Stackd imports it.</span>
-        </h2>
-        <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
-          Ask ChatGPT or Claude to build a workout program in JSON. Paste it into Stackd. Your entire program — every workout, exercise, and rep range — imports instantly.
-        </p>
-        <ul class="mt-6 space-y-3 text-white/75 text-sm sm:text-base">
-          <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Works with any AI that can output JSON</li>
-          <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Imports nutrition plans the same way</li>
-          <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Re-import anytime to swap programs</li>
-        </ul>
-      </div>
+    <!-- FEATURE 1: AI IMPORT -->
+    <section id="features" class="py-20 sm:py-24 md:py-28 relative">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+                <div>
+                    <div
+                        class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">
+                        01 · AI PROGRAM IMPORT</div>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                        Your AI builds it.<br /><span class="text-stackd-blue glow-text">Stackd imports it.</span>
+                    </h2>
+                    <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
+                        Ask any AI agent to build a workout program in JSON. Paste it into Stackd. Your entire
+                        program — every workout, exercise, and rep range — imports instantly.
+                    </p>
+                    <ul class="mt-6 space-y-3 text-white/75 text-sm sm:text-base">
+                        <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Works with any AI that can
+                            output JSON</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Imports nutrition plans the
+                            same way</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue mt-1">✓</span> Re-import anytime to swap
+                            programs</li>
+                    </ul>
+                </div>
 
-      <div class="card p-5 sm:p-6 md:p-8 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full bg-red-400/70"></div>
-            <div class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></div>
-            <div class="w-2.5 h-2.5 rounded-full bg-green-400/70"></div>
-          </div>
-          <div class="text-[11px] sm:text-xs text-white/40 font-mono truncate ml-3">stackd-program.json</div>
-        </div>
-        <pre class="text-[11px] sm:text-[13px] font-mono leading-relaxed text-white/85 overflow-x-auto scrollbar-none"><span class="text-white/40">{</span>
+                <div class="card p-5 sm:p-6 md:p-8 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-400/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-400/70"></div>
+                        </div>
+                        <div class="text-[11px] sm:text-xs text-white/40 font-mono truncate ml-3">stackd-program.json
+                        </div>
+                    </div>
+                    <pre
+                        class="text-[11px] sm:text-[13px] font-mono leading-relaxed text-white/85 overflow-x-auto scrollbar-none"><span class="text-white/40">{</span>
   <span class="text-stackd-blue">"program"</span>: <span class="text-emerald-300">"5 Day Lean Bulk"</span>,
   <span class="text-stackd-blue">"days"</span>: [
     {
@@ -312,325 +422,401 @@
     }
   ]
 <span class="text-white/40">}</span></pre>
-        <div class="mt-5 pt-5 border-t border-white/10 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-2 text-[11px] sm:text-xs text-white/50">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            Valid Stackd format
-          </div>
-          <button class="pill bg-stackd-blue text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 hover:brightness-110">Import →</button>
+                    <div class="mt-5 pt-5 border-t border-white/10 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 text-[11px] sm:text-xs text-white/50">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            Valid Stackd format
+                        </div>
+                        <button
+                            class="pill bg-stackd-blue text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 hover:brightness-110">Import
+                            →</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- FEATURE 2: e1RM -->
-<section class="py-20 sm:py-24 md:py-28 relative">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
-      <div class="card p-5 sm:p-6 md:p-8 order-2 md:order-1">
-        <div class="flex items-center justify-between mb-2 gap-2">
-          <div class="flex items-center gap-2 text-white/85 font-semibold text-sm sm:text-base">
-            Machine Chest Fly
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          </div>
-          <div class="flex items-center gap-1 text-[11px] sm:text-xs">
-            <span class="px-2 py-1 rounded-full text-white/50">1M</span>
-            <span class="px-2 py-1 rounded-full bg-white/10 text-white">3M</span>
-            <span class="px-2 py-1 rounded-full text-white/50">6M</span>
-            <span class="px-2 py-1 rounded-full text-white/50">All</span>
-          </div>
+    <!-- FEATURE 2: e1RM -->
+    <section class="py-20 sm:py-24 md:py-28 relative">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+                <div class="card p-5 sm:p-6 md:p-8 order-2 md:order-1">
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <div class="flex items-center gap-2 text-white/85 font-semibold text-sm sm:text-base">
+                            Machine Chest Fly
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                        <div class="flex items-center gap-1 text-[11px] sm:text-xs">
+                            <span class="px-2 py-1 rounded-full text-white/50">1M</span>
+                            <span class="px-2 py-1 rounded-full bg-white/10 text-white">3M</span>
+                            <span class="px-2 py-1 rounded-full text-white/50">6M</span>
+                            <span class="px-2 py-1 rounded-full text-white/50">All</span>
+                        </div>
+                    </div>
+                    <div class="h-[220px] sm:h-[260px]">
+                        <canvas id="e1rmChart"></canvas>
+                    </div>
+                    <div class="mt-5 pt-5 border-t border-white/10 grid grid-cols-3 gap-3 sm:gap-4">
+                        <div>
+                            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">E1RM
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black mt-1">129<span
+                                    class="text-sm sm:text-base font-medium text-white/40">kg</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">PEAK
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black mt-1">135<span
+                                    class="text-sm sm:text-base font-medium text-white/40">kg</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">VS LAST
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black mt-1 text-emerald-400">↑7%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2">
+                    <div
+                        class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">
+                        02 · e1RM TRACKING</div>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                        See your strength,<br /><span class="text-stackd-blue glow-text">not just your streak.</span>
+                    </h2>
+                    <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
+                        After every session, Stackd calculates your Estimated One-Rep Max with the Epley formula. A
+                        running chart of strength over time, per exercise.
+                    </p>
+                    <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
+                        <div class="card-tight p-3 text-center">
+                            <div class="text-[10px] sm:text-xs text-white/45">Formula</div>
+                            <div class="font-bold mt-1 text-sm sm:text-base">Epley</div>
+                        </div>
+                        <div class="card-tight p-3 text-center">
+                            <div class="text-[10px] sm:text-xs text-white/45">Per</div>
+                            <div class="font-bold mt-1 text-sm sm:text-base">Exercise</div>
+                        </div>
+                        <div class="card-tight p-3 text-center">
+                            <div class="text-[10px] sm:text-xs text-white/45">Updates</div>
+                            <div class="font-bold mt-1 text-sm sm:text-base">Auto</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="h-[220px] sm:h-[260px]">
-          <canvas id="e1rmChart"></canvas>
+    </section>
+
+    <!-- FEATURE 3: PROGRESSIVE OVERLOAD -->
+    <section class="py-20 sm:py-24 md:py-28 relative">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+                <div>
+                    <div
+                        class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">
+                        03 · OVERLOAD ALERTS</div>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                        The 2-for-2 rule,<br /><span class="text-stackd-blue glow-text">automated.</span>
+                    </h2>
+                    <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
+                        NSCA's 2-for-2 rule: hit the top of your rep range for two sessions in a row, and Stackd tells
+                        you to add weight. No guesswork. No spreadsheet.
+                    </p>
+
+                    <div class="mt-7 card p-4 sm:p-5">
+                        <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                            <div
+                                class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">
+                                Session N</div>
+                            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
+                            </div>
+                            <div
+                                class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">
+                                Session N+1</div>
+                            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]">
+                            </div>
+                            <div
+                                class="pill bg-stackd-blue px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-softGlow whitespace-nowrap">
+                                +2.5kg</div>
+                        </div>
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs text-white/55">
+                            <div class="flex items-center gap-2"><span
+                                    class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range</div>
+                            <div class="flex items-center gap-2"><span
+                                    class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range again</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative flex justify-center">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div
+                            class="w-[280px] sm:w-[420px] h-[280px] sm:h-[420px] rounded-full bg-stackd-blue/20 blur-[80px] sm:blur-[100px]">
+                        </div>
+                    </div>
+                    <div class="phone-mock w-[240px] sm:w-[300px] md:w-[320px] relative">
+                        <img src="assets/screen-workout.jpeg" alt="Workout progression with recommendations"
+                            class="block w-full h-auto" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mt-5 pt-5 border-t border-white/10 grid grid-cols-3 gap-3 sm:gap-4">
-          <div>
-            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">E1RM</div>
-            <div class="text-2xl sm:text-3xl font-black mt-1">129<span class="text-sm sm:text-base font-medium text-white/40">kg</span></div>
-          </div>
-          <div>
-            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">PEAK</div>
-            <div class="text-2xl sm:text-3xl font-black mt-1">135<span class="text-sm sm:text-base font-medium text-white/40">kg</span></div>
-          </div>
-          <div>
-            <div class="text-[10px] sm:text-[11px] tracking-widest text-white/45 font-semibold">VS LAST</div>
-            <div class="text-2xl sm:text-3xl font-black mt-1 text-emerald-400">↑7%</div>
-          </div>
+    </section>
+
+    <!-- FEATURE GRID 4 + 5 -->
+    <section class="py-20 sm:py-24 md:py-28">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-5 sm:gap-6">
+                <!-- Nutrition -->
+                <div class="card p-7 sm:p-8 md:p-10 relative overflow-hidden">
+                    <div
+                        class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-5">
+                        04 · NUTRITION</div>
+                    <h3 class="text-2xl sm:text-3xl font-black tracking-tight">One app for fuel and force.</h3>
+                    <p class="mt-3 text-white/60 text-sm sm:text-base">
+                        Log meals, track macros, follow a plan — inside the same app you train in. Nutrition and
+                        performance live together because they belong together.
+                    </p>
+                    <div class="mt-7 flex justify-center">
+                        <div class="phone-mock w-[220px] sm:w-[250px]">
+                            <img src="assets/screen-nutrition.jpeg" alt="Nutrition plan" class="block w-full h-auto" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History / Export -->
+                <div class="card p-7 sm:p-8 md:p-10 relative overflow-hidden">
+                    <div
+                        class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-5">
+                        05 · HISTORY &amp; EXPORT</div>
+                    <h3 class="text-2xl sm:text-3xl font-black tracking-tight">Every session, saved forever.</h3>
+                    <p class="mt-3 text-white/60 text-sm sm:text-base">
+                        Review session history and export your programs, nutrition, and full session log as CSV anytime.
+                    </p>
+                    <div class="mt-7 flex justify-center">
+                        <div class="phone-mock w-[220px] sm:w-[250px]">
+                            <img src="assets/screen-export.jpeg" alt="Export data screen" class="block w-full h-auto" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div class="order-1 md:order-2">
-        <div class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">02 · e1RM TRACKING</div>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-          See your strength,<br/><span class="text-stackd-blue glow-text">not just your streak.</span>
-        </h2>
-        <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
-          After every session, Stackd calculates your Estimated One-Rep Max with the Epley formula. A running chart of strength over time, per exercise.
-        </p>
-        <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-          <div class="card-tight p-3 text-center"><div class="text-[10px] sm:text-xs text-white/45">Formula</div><div class="font-bold mt-1 text-sm sm:text-base">Epley</div></div>
-          <div class="card-tight p-3 text-center"><div class="text-[10px] sm:text-xs text-white/45">Per</div><div class="font-bold mt-1 text-sm sm:text-base">Exercise</div></div>
-          <div class="card-tight p-3 text-center"><div class="text-[10px] sm:text-xs text-white/45">Updates</div><div class="font-bold mt-1 text-sm sm:text-base">Auto</div></div>
+    <!-- PRICING -->
+    <section id="pricing" class="py-20 sm:py-24 md:py-32">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+            <div class="text-center mb-12 sm:mb-14">
+                <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">Pricing</p>
+                <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">Simple pricing.<br />No
+                    surprises.</h2>
+                <p class="mt-4 sm:mt-5 text-white/60 text-sm sm:text-base">No ads. Cancel anytime.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-5 sm:gap-6 max-w-3xl mx-auto">
+                <!-- Monthly -->
+                <div class="card p-7 sm:p-8 glow-border relative ring-1 ring-stackd-blue/40 shadow-glow">
+                    <div class="text-sm font-semibold text-stackd-blue">Monthly</div>
+                    <div class="mt-3 flex items-baseline gap-1">
+                        <span class="text-4xl sm:text-5xl font-black">$1.99</span>
+                        <span class="text-white/40">/month</span>
+                    </div>
+                    <p class="mt-2 text-white/55 text-sm">Full access. Cancel anytime.</p>
+                    <ul class="mt-6 sm:mt-7 space-y-3 text-sm text-white/90">
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Unlimited programs</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Unlimited exercises</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Full session history</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Nutrition &amp; meal planning
+                        </li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> e1RM charts &amp; analytics</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Premium themes</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Data export (CSV)</li>
+                    </ul>
+                    <a href="#download"
+                        class="mt-7 sm:mt-8 block text-center pill bg-stackd-blue hover:brightness-110 py-3 font-semibold transition">Get
+                        Stackd</a>
+                </div>
+
+                <!-- Yearly -->
+                <div class="card p-7 sm:p-8 relative ring-1 ring-white/10">
+                    <div
+                        class="absolute -top-3 left-7 sm:left-8 pill bg-white text-black px-3 py-1 text-[10px] sm:text-xs font-bold">
+                        BEST VALUE</div>
+                    <div class="text-sm font-semibold text-white/70">Yearly</div>
+                    <div class="mt-3 flex items-baseline gap-1">
+                        <span class="text-4xl sm:text-5xl font-black">$7.99</span>
+                        <span class="text-white/40">/year</span>
+                    </div>
+                    <p class="mt-2 text-white/55 text-sm">That's <span class="text-white">67% off</span> — under
+                        $0.67/month.</p>
+                    <ul class="mt-6 sm:mt-7 space-y-3 text-sm text-white/90">
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Everything in Monthly</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Billed once a year</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Best price, same features</li>
+                        <li class="flex gap-3"><span class="text-stackd-blue">✓</span> No ads, ever</li>
+                    </ul>
+                    <a href="#download"
+                        class="mt-7 sm:mt-8 block text-center pill border border-white/20 hover:bg-white/5 py-3 font-semibold transition">Get
+                        Stackd Yearly</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- FEATURE 3: PROGRESSIVE OVERLOAD -->
-<section class="py-20 sm:py-24 md:py-28 relative">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
-      <div>
-        <div class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-4 sm:mb-5">03 · OVERLOAD ALERTS</div>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-          The 2-for-2 rule,<br/><span class="text-stackd-blue glow-text">automated.</span>
-        </h2>
-        <p class="mt-4 sm:mt-5 text-white/60 text-base sm:text-lg">
-          NSCA's 2-for-2 rule: hit the top of your rep range for two sessions in a row, and Stackd tells you to add weight. No guesswork. No spreadsheet.
-        </p>
-
-        <div class="mt-7 card p-4 sm:p-5">
-          <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-            <div class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">Session N</div>
-            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]"></div>
-            <div class="card-tight px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap">Session N+1</div>
-            <div class="flex-1 h-px bg-gradient-to-r from-stackd-blue/60 to-stackd-blue/0 min-w-[20px]"></div>
-            <div class="pill bg-stackd-blue px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-softGlow whitespace-nowrap">+2.5kg</div>
-          </div>
-          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs text-white/55">
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range</div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Hit top of rep range again</div>
-          </div>
+    <!-- FAQ TEASER -->
+    <section class="py-16 sm:py-20 md:py-24">
+        <div class="max-w-4xl mx-auto px-5 sm:px-6">
+            <div
+                class="card p-7 sm:p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-8 justify-between">
+                <div>
+                    <p class="text-stackd-blue text-[11px] sm:text-xs font-bold tracking-widest uppercase mb-2">FAQ</p>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">Got questions?</h2>
+                    <p class="mt-3 text-white/60 max-w-md text-sm sm:text-base">JSON format, e1RM math, subscription,
+                        troubleshooting — all in one place.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="faq.html"
+                        class="pill bg-stackd-blue text-white px-5 py-3 font-semibold whitespace-nowrap text-center">Read
+                        the FAQ →</a>
+                    <a href="support.html"
+                        class="pill border border-white/15 hover:bg-white/5 px-5 py-3 font-semibold whitespace-nowrap text-center">Get
+                        support</a>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div class="relative flex justify-center">
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="w-[280px] sm:w-[420px] h-[280px] sm:h-[420px] rounded-full bg-stackd-blue/20 blur-[80px] sm:blur-[100px]"></div>
+    <!-- ABOUT -->
+    <section class="py-20 sm:py-24 md:py-28">
+        <div class="max-w-3xl mx-auto px-5 sm:px-6 text-center">
+            <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">Why Stackd
+                exists</p>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                The workflow already existed.<br />It just had no proper home.
+            </h2>
+            <p class="mt-5 sm:mt-6 text-white/65 text-base sm:text-lg">
+                Stackd was built by a solo developer who got tired of designing programs and tracking them in
+                a notes app. Stackd is that home.
+            </p>
         </div>
-        <div class="phone-mock w-[240px] sm:w-[300px] md:w-[320px] relative">
-          <img src="assets/screen-workout.jpeg" alt="Workout progression with recommendations" class="block w-full h-auto" />
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 sm:py-20 md:py-28">
+        <div class="max-w-5xl mx-auto px-5 sm:px-6">
+            <div class="card glow-border p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
+                <div class="absolute inset-0 -z-10">
+                    <div
+                        class="absolute -top-20 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-stackd-blue/30 blur-[100px] sm:blur-[140px] rounded-full">
+                    </div>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">Stop rebuilding
+                    programs.<br /><span class="text-stackd-blue glow-text">Start lifting them.</span></h2>
+                <p class="mt-4 sm:mt-5 text-white/65 max-w-xl mx-auto text-sm sm:text-base">$1.99/month or $7.99/year.
+                    No ads. Built for iPhone.</p>
+                <div class="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                    <a href="#"
+                        class="pill bg-white text-black font-semibold px-6 py-3.5 hover:brightness-90 transition flex items-center justify-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16.365 1.43c0 1.14-.43 2.25-1.18 3.04-.8.85-2.07 1.5-3.13 1.41-.13-1.13.42-2.32 1.16-3.06.83-.84 2.23-1.45 3.15-1.39zM20.5 17.39c-.55 1.27-.81 1.83-1.5 2.95-.97 1.55-2.34 3.49-4.04 3.5-1.5.02-1.89-.97-3.93-.96-2.04.01-2.46.97-3.96.96-1.7-.01-3-1.76-3.97-3.31-2.71-4.34-3-9.43-1.32-12.14 1.18-1.92 3.05-3.05 4.81-3.05 1.79 0 2.92.97 4.4.97 1.43 0 2.31-.97 4.4-.97 1.55 0 3.18.84 4.34 2.29-3.81 2.07-3.19 7.45.77 8.76z" />
+                        </svg>
+                        Download on the App Store
+                    </a>
+                    <a href="https://discord.gg/n6M96ymN"
+                        class="pill border border-white/15 hover:bg-white/5 px-6 py-3.5 font-medium transition text-center">Join
+                        Discord</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- FEATURE GRID 4 + 5 -->
-<section class="py-20 sm:py-24 md:py-28">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="grid md:grid-cols-2 gap-5 sm:gap-6">
-      <!-- Nutrition -->
-      <div class="card p-7 sm:p-8 md:p-10 relative overflow-hidden">
-        <div class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-5">04 · NUTRITION</div>
-        <h3 class="text-2xl sm:text-3xl font-black tracking-tight">One app for fuel and force.</h3>
-        <p class="mt-3 text-white/60 text-sm sm:text-base">
-          Log meals, track macros, follow a plan — inside the same app you train in. Nutrition and performance live together because they belong together.
-        </p>
-        <div class="mt-7 flex justify-center">
-          <div class="phone-mock w-[220px] sm:w-[250px]">
-            <img src="assets/screen-nutrition.jpeg" alt="Nutrition plan" class="block w-full h-auto" />
-          </div>
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-10 sm:py-12">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2.5">
+                    <img src="assets/logo.jpeg" alt="" class="w-8 h-8 rounded-lg" />
+                    <span class="font-bold tracking-tight">Stackd</span>
+                </div>
+                <p class="mt-4 text-sm text-white/50 max-w-sm">The gym tracker built for AI-native lifters. Designed in
+                    any AI agent, tracked in Stackd.</p>
+            </div>
+            <div>
+                <div class="text-xs font-bold tracking-widest text-white/40 mb-4">PRODUCT</div>
+                <ul class="space-y-2 text-sm text-white/70">
+                    <li><a href="#features" class="hover:text-white">Features</a></li>
+                    <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
+                    <li><a href="faq.html" class="hover:text-white">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="text-xs font-bold tracking-widest text-white/40 mb-4">COMPANY</div>
+                <ul class="space-y-2 text-sm text-white/70">
+                    <li><a href="support.html" class="hover:text-white">Support</a></li>
+                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white">Terms of Use</a></li>
+                    <li><a href="https://discord.gg/n6M96ymN" class="hover:text-white">Discord</a></li>
+                    <li><a href="https://github.com/jovanpet?tab=repositories" class="hover:text-white">GitHub
+                            Issues</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
-
-      <!-- History / Export -->
-      <div class="card p-7 sm:p-8 md:p-10 relative overflow-hidden">
-        <div class="pill inline-flex bg-stackd-blue/15 text-stackd-blue text-[11px] sm:text-xs font-bold px-3 py-1.5 mb-5">05 · HISTORY &amp; EXPORT</div>
-        <h3 class="text-2xl sm:text-3xl font-black tracking-tight">Every session, saved forever.</h3>
-        <p class="mt-3 text-white/60 text-sm sm:text-base">
-          Review session history and export your programs, nutrition, and full session log as CSV anytime.
-        </p>
-        <div class="mt-7 flex justify-center">
-          <div class="phone-mock w-[220px] sm:w-[250px]">
-            <img src="assets/screen-export.jpeg" alt="Export data screen" class="block w-full h-auto" />
-          </div>
+        <div
+            class="max-w-7xl mx-auto px-5 sm:px-6 mt-8 sm:mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/40">
+            <div>© 2026 Stackd. All rights reserved.</div>
+            <div>Made for lifters who think in tokens.</div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </footer>
 
-<!-- PRICING -->
-<section id="pricing" class="py-20 sm:py-24 md:py-32">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6">
-    <div class="text-center mb-12 sm:mb-14">
-      <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">Pricing</p>
-      <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">Train free.<br class="sm:hidden"/> Go premium when ready.</h2>
-      <p class="mt-4 sm:mt-5 text-white/60 text-sm sm:text-base">No ads on any tier. Cancel anytime.</p>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
-      <!-- Free -->
-      <div class="card p-7 sm:p-8">
-        <div class="text-sm font-semibold text-white/60">Free</div>
-        <div class="mt-3 flex items-baseline gap-1">
-          <span class="text-4xl sm:text-5xl font-black">$0</span>
-          <span class="text-white/40">/forever</span>
-        </div>
-        <p class="mt-2 text-white/55 text-sm">Get started. See if Stackd is for you.</p>
-        <ul class="mt-6 sm:mt-7 space-y-3 text-sm text-white/80">
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Up to 1 program</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Up to 5 exercises per workout</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Basic session history</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> No ads</li>
-        </ul>
-        <a href="#download" class="mt-7 sm:mt-8 block text-center pill border border-white/15 hover:bg-white/5 py-3 font-semibold transition">Download free</a>
-      </div>
-
-      <!-- Premium -->
-      <div class="card p-7 sm:p-8 glow-border relative ring-1 ring-stackd-blue/40 shadow-glow">
-        <div class="absolute -top-3 left-7 sm:left-8 pill bg-stackd-blue px-3 py-1 text-[10px] sm:text-xs font-bold">MOST POPULAR</div>
-        <div class="text-sm font-semibold text-stackd-blue">Premium</div>
-        <div class="mt-3 flex items-baseline gap-1">
-          <span class="text-4xl sm:text-5xl font-black">$1.99</span>
-          <span class="text-white/40">/month</span>
-        </div>
-        <p class="mt-2 text-white/55 text-sm">or <span class="text-white">$7.99/year</span> — 67% off.</p>
-        <ul class="mt-6 sm:mt-7 space-y-3 text-sm text-white/90">
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> <span><b>Unlimited</b> programs</span></li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> <span><b>Unlimited</b> exercises per workout</span></li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Full session history</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Nutrition &amp; meal planning</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> e1RM charts &amp; analytics</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Premium themes</li>
-          <li class="flex gap-3"><span class="text-stackd-blue">✓</span> Data export (CSV)</li>
-        </ul>
-        <a href="#download" class="mt-7 sm:mt-8 block text-center pill bg-stackd-blue hover:brightness-110 py-3 font-semibold transition">Get Premium</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ TEASER -->
-<section class="py-16 sm:py-20 md:py-24">
-  <div class="max-w-4xl mx-auto px-5 sm:px-6">
-    <div class="card p-7 sm:p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-8 justify-between">
-      <div>
-        <p class="text-stackd-blue text-[11px] sm:text-xs font-bold tracking-widest uppercase mb-2">FAQ</p>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">Got questions?</h2>
-        <p class="mt-3 text-white/60 max-w-md text-sm sm:text-base">JSON format, e1RM math, subscription, troubleshooting — all in one place.</p>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <a href="faq.html" class="pill bg-stackd-blue text-white px-5 py-3 font-semibold whitespace-nowrap text-center">Read the FAQ →</a>
-        <a href="support.html" class="pill border border-white/15 hover:bg-white/5 px-5 py-3 font-semibold whitespace-nowrap text-center">Get support</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section class="py-20 sm:py-24 md:py-28">
-  <div class="max-w-3xl mx-auto px-5 sm:px-6 text-center">
-    <p class="text-stackd-blue text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3">Why Stackd exists</p>
-    <h2 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">
-      The workflow already existed.<br/>It just had no proper home.
-    </h2>
-    <p class="mt-5 sm:mt-6 text-white/65 text-base sm:text-lg">
-      Stackd was built by a solo developer who got tired of designing programs in ChatGPT and tracking them in a notes app. Stackd is that home.
-    </p>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="py-16 sm:py-20 md:py-28">
-  <div class="max-w-5xl mx-auto px-5 sm:px-6">
-    <div class="card glow-border p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
-      <div class="absolute inset-0 -z-10">
-        <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-stackd-blue/30 blur-[100px] sm:blur-[140px] rounded-full"></div>
-      </div>
-      <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">Stop rebuilding programs.<br/><span class="text-stackd-blue glow-text">Start lifting them.</span></h2>
-      <p class="mt-4 sm:mt-5 text-white/65 max-w-xl mx-auto text-sm sm:text-base">Free to start. $1.99/month for premium. Built for iPhone.</p>
-      <div class="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-        <a href="#" class="pill bg-white text-black font-semibold px-6 py-3.5 hover:brightness-90 transition flex items-center justify-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.43 2.25-1.18 3.04-.8.85-2.07 1.5-3.13 1.41-.13-1.13.42-2.32 1.16-3.06.83-.84 2.23-1.45 3.15-1.39zM20.5 17.39c-.55 1.27-.81 1.83-1.5 2.95-.97 1.55-2.34 3.49-4.04 3.5-1.5.02-1.89-.97-3.93-.96-2.04.01-2.46.97-3.96.96-1.7-.01-3-1.76-3.97-3.31-2.71-4.34-3-9.43-1.32-12.14 1.18-1.92 3.05-3.05 4.81-3.05 1.79 0 2.92.97 4.4.97 1.43 0 2.31-.97 4.4-.97 1.55 0 3.18.84 4.34 2.29-3.81 2.07-3.19 7.45.77 8.76z"/></svg>
-          Download on the App Store
-        </a>
-        <a href="https://discord.gg/n6M96ymN" class="pill border border-white/15 hover:bg-white/5 px-6 py-3.5 font-medium transition text-center">Join Discord</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="border-t border-white/5 py-10 sm:py-12">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-    <div class="md:col-span-2">
-      <div class="flex items-center gap-2.5">
-        <img src="assets/logo.jpeg" alt="" class="w-8 h-8 rounded-lg" />
-        <span class="font-bold tracking-tight">Stackd</span>
-      </div>
-      <p class="mt-4 text-sm text-white/50 max-w-sm">The gym tracker built for AI-native lifters. Designed in ChatGPT, tracked in Stackd.</p>
-    </div>
-    <div>
-      <div class="text-xs font-bold tracking-widest text-white/40 mb-4">PRODUCT</div>
-      <ul class="space-y-2 text-sm text-white/70">
-        <li><a href="#features" class="hover:text-white">Features</a></li>
-        <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-        <li><a href="faq.html" class="hover:text-white">FAQ</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="text-xs font-bold tracking-widest text-white/40 mb-4">COMPANY</div>
-      <ul class="space-y-2 text-sm text-white/70">
-        <li><a href="support.html" class="hover:text-white">Support</a></li>
-        <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
-        <li><a href="terms.html" class="hover:text-white">Terms of Use</a></li>
-        <li><a href="https://discord.gg/n6M96ymN" class="hover:text-white">Discord</a></li>
-        <li><a href="https://github.com/jovanpet?tab=repositories" class="hover:text-white">GitHub Issues</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 mt-8 sm:mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/40">
-    <div>© 2026 Stackd. All rights reserved.</div>
-    <div>Made for lifters who think in tokens.</div>
-  </div>
-</footer>
-
-<script>
-  // e1RM chart
-  const ctx = document.getElementById('e1rmChart');
-  if (ctx) {
-    const grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 260);
-    grad.addColorStop(0, 'rgba(47,107,255,0.45)');
-    grad.addColorStop(1, 'rgba(47,107,255,0)');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Feb 02','Feb 09','Feb 16','Feb 23','Mar 02','Mar 09','Mar 16','Mar 23','Mar 30','Apr 06','Apr 13','Apr 20'],
-        datasets: [{
-          data: [110, 112, 118, 124, 126, 128, 130, 127, 132, 134, 135, 129],
-          borderColor: '#2F6BFF',
-          borderWidth: 3,
-          tension: 0.4,
-          fill: true,
-          backgroundColor: grad,
-          pointBackgroundColor: '#2F6BFF',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 6,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-          backgroundColor: '#000',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          titleColor: '#fff', bodyColor: '#2F6BFF',
-          callbacks: { label: (ctx) => `${ctx.parsed.y} kg` }
-        }},
-        scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', maxTicksLimit: 5, font:{size:10} } },
-          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', font:{size:10}, callback: v => v + 'kg' } }
+    <script>
+        // e1RM chart
+        const ctx = document.getElementById('e1rmChart');
+        if (ctx) {
+            const grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 260);
+            grad.addColorStop(0, 'rgba(47,107,255,0.45)');
+            grad.addColorStop(1, 'rgba(47,107,255,0)');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Feb 02', 'Feb 09', 'Feb 16', 'Feb 23', 'Mar 02', 'Mar 09', 'Mar 16', 'Mar 23', 'Mar 30', 'Apr 06', 'Apr 13', 'Apr 20'],
+                    datasets: [{
+                        data: [110, 112, 118, 124, 126, 128, 130, 127, 132, 134, 135, 129],
+                        borderColor: '#2F6BFF',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: grad,
+                        pointBackgroundColor: '#2F6BFF',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, tooltip: {
+                            backgroundColor: '#000',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            titleColor: '#fff', bodyColor: '#2F6BFF',
+                            callbacks: { label: (ctx) => `${ctx.parsed.y} kg` }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', maxTicksLimit: 5, font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 }, callback: v => v + 'kg' } }
+                    }
+                }
+            });
         }
-      }
-    });
-  }
-</script>
+    </script>
 </body>
+
 </html>
