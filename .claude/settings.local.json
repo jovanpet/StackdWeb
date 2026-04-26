@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"free\\\\|Free\\\\|free to start\\\\|\\\\$0\\\\|1 program\\\\|5 exercise\" /Users/jovanpetrovic/Desktop/Projects/react-native/SwiftUIProjects/StackdWeb/index.html)"
+    ]
+  }
+}
